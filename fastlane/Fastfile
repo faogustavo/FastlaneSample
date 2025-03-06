@@ -1,0 +1,49 @@
+platform :ios do
+  lane :build do
+    build_app(
+      project: "./iosApp/iosApp.xcodeproj",
+      configuration: "Debug",
+      scheme: "iosApp",
+      destination: "generic/platform=iOS",
+      # Disabling CodeSign and Archive so we don't need to deal with provisioning profiles
+      # For real projects, do not skip these steps
+      skip_codesigning: true,
+      skip_archive: true
+    )
+  end
+
+  lane :test do
+    gradle(
+      tasks: [
+        ':composeApp:iosSimulatorArm64Test',
+        ':composeApp:iosX64Test',
+      ]
+    )
+
+    run_tests(
+      project: "./iosApp/iosApp.xcodeproj",
+      configuration: "Debug",
+      scheme: "iosAppUiTest",
+      device: "iPhone 16 (18.2)",
+      ensure_devices_found: true,
+      prelaunch_simulator: true,
+      fail_build: false,
+      reset_simulator: true
+    )
+  end
+end
+
+platform :android do
+  lane :build do
+    gradle(
+      task: "assemble",
+      build_type: "Debug"
+    )
+  end
+
+  lane :test do
+    gradle(
+      task: "testDebugUnitTest"
+    )
+  end
+end

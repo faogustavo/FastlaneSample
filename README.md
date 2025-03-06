@@ -1,14 +1,23 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# KMP + Fastlane
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+This project is a simple example on how to use Fastlane (https://fastlane.tools/) in a KMP Project.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+The project contains two main branches:
+
+1. main - Contains a simple KMP project created by the KMP Wizard (https://kmp.jetbrains.com/) and the fastlane
+configuration to build it for Android and iOS;
+2. kmmbridge-spm - Contains the same project, but updated to run using SPM and SPM Local Dev Flow;
+
+## How to run
+
+1. Install Fastlane using Bundler: `bundle install`
+2. Run the Fastlane command: `bundle exec fastlane $platform $name`
+   1. Example: `bundle exec fastlane ios build`
 
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Notes
+
+1. In the SPM Branch, we are setting an env var to use the local version. As we are not using a Package.swift file 
+managed by the KMMBridge Plugin, we need to manually implement it.
+2. In both branches, iOS Code Signing is disabled to make it easier to run the project. In a real project, you should
+configure the code signing properly.
