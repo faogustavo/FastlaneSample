@@ -1,8 +1,18 @@
 platform :ios do
+  before_all do |lane|
+    ENV['localBuild'] = 'true'
+  end
+
   lane :build do
+    buildMode = ENV['releaseBuild'] == 'true' ? 'Release' : 'Debug'
+
+    gradle(
+      task: "assembleComposeApp#{buildMode}XCFramework"
+    )
+
     build_app(
       project: "./iosApp/iosApp.xcodeproj",
-      configuration: "Debug",
+      configuration: buildMode,
       scheme: "iosApp",
       destination: "generic/platform=iOS",
       # Disabling CodeSign and Archive so we don't need to deal with provisioning profiles
@@ -13,11 +23,17 @@ platform :ios do
   end
 
   lane :test do
+    buildMode = ENV['releaseBuild'] == 'true' ? 'Release' : 'Debug'
+
     gradle(
       tasks: [
         ':composeApp:iosSimulatorArm64Test',
         ':composeApp:iosX64Test',
       ]
+    )
+
+    gradle(
+      task: "assembleComposeApp#{buildMode}XCFramework"
     )
 
     run_tests(
